@@ -1,0 +1,69 @@
+import java.awt.*;
+import java.util.ArrayList;
+import javax.swing.*;
+
+public class ToDoApp {
+    private final JFrame frame;
+    private final JTextField taskField;
+    private final DefaultListModel<String> taskListModel;
+    private final JList<String> taskList;
+    private final ArrayList<String> tasks;
+
+    public ToDoApp() {
+        tasks=new ArrayList<>();
+        frame=new JFrame("To-Do List");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 400);
+
+        taskField=new JTextField();
+        taskField.setFont(new Font("Arial",Font.PLAIN, 14));
+
+        taskListModel=new DefaultListModel<>();
+        taskList=new JList<>(taskListModel);
+        JScrollPane scrollPane=new JScrollPane(taskList);
+
+        JButton addButton=new JButton("Add Task");
+        JButton deleteButton=new JButton("Delete Task");
+
+        JPanel buttonPanel=new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
+        buttonPanel.add(addButton);
+        buttonPanel.add(deleteButton);
+
+        frame.setLayout(new BorderLayout());
+        frame.add(taskField,BorderLayout.NORTH);
+        frame.add(scrollPane,BorderLayout.CENTER);
+        frame.add(buttonPanel,BorderLayout.SOUTH);
+
+        addButton.addActionListener(_ ->addTask());
+        deleteButton.addActionListener(_ ->deleteTask());
+        taskField.addActionListener(_ ->addTask());
+
+        frame.setVisible(true);
+    }
+
+    private void addTask(){
+        String task=taskField.getText().trim();
+        if(!task.isEmpty()){
+            tasks.add(task);
+            taskListModel.addElement(task);
+            taskField.setText("");
+        } else{
+            JOptionPane.showMessageDialog(frame,"Enter a task!","Warning",JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private void deleteTask(){
+        int selectedIndex=taskList.getSelectedIndex();
+        if(selectedIndex!=-1){
+            tasks.remove(selectedIndex);
+            taskListModel.remove(selectedIndex);
+        } else{
+            JOptionPane.showMessageDialog(frame,"Select a task to delete!","Warning",JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(ToDoApp::new);
+    }
+}
